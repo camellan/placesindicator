@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Places Indicator
+GenericName=Places Indicator
+Comment=Quick access to Your Bookmarks in File manager
+Categories=System;
+Exec=com.github.camellan.placesindicator
+Icon=com.github.camellan.placesindicator
+Terminal=false
+Type=Application
+X-GNOME-UsesNotifications=true

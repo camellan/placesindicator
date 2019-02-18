@@ -1,0 +1,42 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the com.github.camellan.placesindicator package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: com.github.camellan.placesindicator\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-02-18 08:21+0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/PlacesIndicator.vala:23
+msgid "Home Folder"
+msgstr ""
+
+#: src/PlacesIndicator.vala:36
+msgid "Root"
+msgstr ""
+
+#: src/PlacesIndicator.vala:48
+msgid "Recent"
+msgstr ""
+
+#: src/PlacesIndicator.vala:60
+msgid "Network"
+msgstr ""
+
+#: src/PlacesIndicator.vala:72
+msgid "Trash"
+msgstr ""
+
+#: src/PlacesIndicator.vala:126
+msgid "Quit"
+msgstr ""
