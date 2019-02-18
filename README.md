@@ -3,10 +3,6 @@
 
 Quick access to Your Bookmarks in File manager.
 
-<p align="left">
-  <a href="https://appcenter.elementary.io/com.github.camellan.placesindicator"><img src="https://appcenter.elementary.io/badge.svg" alt="Get it on AppCenter" /></a>
-</p>
-
 ![Screenshot](https://github.com/camellan/placeindicator/blob/master/data/images/placesindicator.png)
 
 ## Dependencies
