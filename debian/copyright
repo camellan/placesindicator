@@ -1,6 +1,6 @@
 Format: https://dep.debian.net/deps/dep5
-Upstream-Name: com.github.camellan.placeindicator
-Source: https://github.com/camellan/placeindicator
+Upstream-Name: com.github.camellan.placesindicator
+Source: https://github.com/camellan/placesindicator
 
 Files: src/* data/* debian/*
 Copyright: 2019 Andrey Kultyapov <camellan@yandex.ru>

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2019 Andrey Kultyapov <camellan@yandex.ru> -->
+<!-- Copyright (c) 2019 Andrey Kultyapov <https://github.com/camellan/placesindicator> -->
 <component type="desktop">
   <id>com.github.camellan.placesindicator</id>
   <metadata_license>CC0</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <name>Places Indicator</name>
-  <summary>A GTK3 Menu Places Folder Indicator</summary>
+  <summary>A GTK3 based indicator for quick access to folders</summary>
   <description>
-    <p>Quick access to Your Bookmarks in File manager.</p>
+    <p>A simple indicator, which gives fast access to the default folder and custom bookmarks, a File Manager in the Wingpanel. </p>
   </description>
   ​<releases>
-    <release version="1.0.0" date="2019-02-17" urgency="low">
+    <release version="1.0" date="2019-02-17" urgency="low">
   ​    <description>
         <p></p>
       </description>

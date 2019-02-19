@@ -1,9 +1,9 @@
-com.github.camellan.placeindicator (0.1ubuntu1) UNRELEASED; urgency=medium
+com.github.camellan.placesindicator (0.1ubuntu1) UNRELEASED; urgency=medium
 
   [ Cody Garver ]
   * Initial Release.
 
   [ camellan ]
-  * 
+  *
 
  -- camellan <camellan@yandex.ru>  Mon, 18 Feb 2019 12:58:53 +0400
