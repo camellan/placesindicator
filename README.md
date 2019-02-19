@@ -1,7 +1,7 @@
 # Places Indicator
-**A GTK3 Menu Places Folder Indicator**
+**A GTK3 based indicator for quick access to folders**
 
-Quick access to Your Bookmarks in File manager.
+A simple indicator, which gives fast access to the default folder and custom bookmarks a the File Manager.
 
 ![Screenshot](https://github.com/camellan/placeindicator/blob/master/data/images/placesindicator.png)
 
