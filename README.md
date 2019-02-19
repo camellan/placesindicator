@@ -5,6 +5,9 @@ A simple indicator, which gives fast access to the default folder and custom boo
 
 ![Screenshot](https://github.com/camellan/placeindicator/blob/master/data/images/placesindicator.png)
 
+## For coffee
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/camellan/5)
+
 ## Dependencies
 
 Please make sure you have these dependencies first before building.
