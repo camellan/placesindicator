@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/camellan/placesindicator.svg?branch=master)](https://travis-ci.com/camellan/placesindicator)
 # Places Indicator
 **A GTK3 based indicator for quick access to folders**
 
