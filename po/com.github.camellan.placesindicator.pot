@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.camellan.placesindicator\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-20 01:43+0400\n"
+"POT-Creation-Date: 2019-03-03 02:41+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,26 +17,26 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/PlacesIndicator.vala:23
+#: src/PlacesIndicator.vala:69
 msgid "Home Folder"
 msgstr ""
 
-#: src/PlacesIndicator.vala:36
+#: src/PlacesIndicator.vala:82
 msgid "Root"
 msgstr ""
 
-#: src/PlacesIndicator.vala:48
+#: src/PlacesIndicator.vala:95
 msgid "Recent"
 msgstr ""
 
-#: src/PlacesIndicator.vala:60
+#: src/PlacesIndicator.vala:108
 msgid "Network"
 msgstr ""
 
-#: src/PlacesIndicator.vala:72
+#: src/PlacesIndicator.vala:121
 msgid "Trash"
 msgstr ""
 
-#: src/PlacesIndicator.vala:126
+#: src/PlacesIndicator.vala:134
 msgid "Quit"
 msgstr ""
