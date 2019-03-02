@@ -1,6 +1,6 @@
 Source: com.github.camellan.placesindicator
 Section: x11
-Priority: optional
+Priority: extra
 Maintainer: Andrey Kultyapov <camellan@yandex.ru>
 Build-Depends: cmake (>= 2.8),
                debhelper (>= 9),
