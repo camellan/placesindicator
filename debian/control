@@ -14,5 +14,5 @@ Standards-Version: 3.9.3
 Package: com.github.camellan.placesindicator
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Hey young world
- This is a Hello World written in Vala using CMake build system.
+Description: Places Indicator
+ A simple indicator, which gives fast access to the default folder and custom bookmarks a the File Manager.
