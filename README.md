@@ -17,6 +17,7 @@ Please make sure you have these dependencies first before building.
 gtk+-3.0
 glib-2.0
 appindicator3-0.1
+libappindicator3-dev
 ```
 To build locally:
 
