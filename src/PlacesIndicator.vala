@@ -10,30 +10,21 @@ public class IndicatorPlaces : GLib.Object {
     private static string config_dir;
     private static string filename;
     private static string icon_name;
-    private static string path;
-    private static string label;
-
     private static GLib.File file;
     private static Gtk.Menu menu;
     private static Gtk.Image icon;
-    private static Gtk.ImageMenuItem home;
-    private static Gtk.ImageMenuItem root;
-    private static Gtk.ImageMenuItem recent;
-    private static Gtk.ImageMenuItem net;
-    private static Gtk.ImageMenuItem trash;
-    private static Gtk.ImageMenuItem quit;
     private static Gtk.ImageMenuItem item;
     private static Gtk.SeparatorMenuItem sep;
     protected static Indicator indicator;
     protected static FileMonitor monitor;
 
     public static void make_std_places () {
-        home = new Gtk.ImageMenuItem.with_label (_("Home Folder"));
+        item = new Gtk.ImageMenuItem.with_label (_("Home Folder"));
         icon = new Gtk.Image.from_icon_name ("folder-home", Gtk.IconSize.MENU);
-        home.set_always_show_image (true);
-        home.set_image (icon);
-        menu.append (home);
-        home.activate.connect (() => {
+        item.set_always_show_image (true);
+        item.set_image (icon);
+        menu.append (item);
+        item.activate.connect (() => {
             try{
                 GLib.AppInfo.launch_default_for_uri ("file:" + user_home, null);
             }
@@ -42,12 +33,12 @@ public class IndicatorPlaces : GLib.Object {
             }
         });
 
-        root = new Gtk.ImageMenuItem.with_label (_("Root"));
+        item = new Gtk.ImageMenuItem.with_label (_("Root"));
         icon = new Gtk.Image.from_icon_name ("computer", Gtk.IconSize.MENU);
-        root.set_always_show_image (true);
-        root.set_image (icon);
-        menu.append (root);
-        root.activate.connect (() => {
+        item.set_always_show_image (true);
+        item.set_image (icon);
+        menu.append (item);
+        item.activate.connect (() => {
             try{
                 GLib.AppInfo.launch_default_for_uri ("file:///", null);
             }
@@ -56,12 +47,12 @@ public class IndicatorPlaces : GLib.Object {
             }
         });
 
-        recent = new Gtk.ImageMenuItem.with_label (_("Recent"));
+        item = new Gtk.ImageMenuItem.with_label (_("Recent"));
         icon = new Gtk.Image.from_icon_name ("document-open-recent", Gtk.IconSize.MENU);
-        recent.set_always_show_image (true);
-        recent.set_image (icon);
-        menu.append (recent);
-        recent.activate.connect (() => {
+        item.set_always_show_image (true);
+        item.set_image (icon);
+        menu.append (item);
+        item.activate.connect (() => {
             try{
                 GLib.AppInfo.launch_default_for_uri ("recent:///", null);
             }
@@ -70,12 +61,12 @@ public class IndicatorPlaces : GLib.Object {
             }
         });
 
-        net = new Gtk.ImageMenuItem.with_label (_("Network"));
+        item = new Gtk.ImageMenuItem.with_label (_("Network"));
         icon = new Gtk.Image.from_icon_name ("folder-network", Gtk.IconSize.MENU);
-        net.set_always_show_image (true);
-        net.set_image (icon);
-        menu.append (net);
-        net.activate.connect (() => {
+        item.set_always_show_image (true);
+        item.set_image (icon);
+        menu.append (item);
+        item.activate.connect (() => {
             try{
                 GLib.AppInfo.launch_default_for_uri ("network:///", null);
             }
@@ -84,12 +75,12 @@ public class IndicatorPlaces : GLib.Object {
             }
         });
 
-        trash = new Gtk.ImageMenuItem.with_label (_("Trash"));
+        item = new Gtk.ImageMenuItem.with_label (_("Trash"));
         icon = new Gtk.Image.from_icon_name ("user-trash", Gtk.IconSize.MENU);
-        trash.set_always_show_image (true);
-        trash.set_image (icon);
-        menu.append (trash);
-        trash.activate.connect (() => {
+        item.set_always_show_image (true);
+        item.set_image (icon);
+        menu.append (item);
+        item.activate.connect (() => {
             try{
                 GLib.AppInfo.launch_default_for_uri ("trash:///", null);
             }
@@ -117,6 +108,8 @@ public class IndicatorPlaces : GLib.Object {
             string line;
 
             while ((line = dis.read_line (null)) != null) {
+            	string path;
+    			string label;
             	path = line.split (" ")[0];
 				label = line.split (" ")[1];
 				item = new Gtk.ImageMenuItem.with_label (label);
@@ -128,7 +121,6 @@ public class IndicatorPlaces : GLib.Object {
                 item.activate.connect (() => {
                     try{
                         GLib.AppInfo.launch_default_for_uri (path, null);
-                        print (path + "\n" + label + "\n");
                     }
                     catch (GLib.Error error) {
                         warning ("Error opening directory: %s", error.message);
@@ -153,14 +145,14 @@ public class IndicatorPlaces : GLib.Object {
     }
 
     public static void make_quit () {
-        quit = new Gtk.ImageMenuItem.with_label(_("Quit"));
+        item = new Gtk.ImageMenuItem.with_label(_("Quit"));
         icon = new Gtk.Image.from_icon_name ("application-exit", Gtk.IconSize.MENU);
-        quit.set_always_show_image(true);
-        quit.set_image(icon);
-        quit.activate.connect(() => {
+        item.set_always_show_image(true);
+        item.set_image(icon);
+        item.activate.connect(() => {
             Gtk.main_quit();
         });
-        menu.append (quit);
+        menu.append (item);
     }
 
     public static void make_menu () {
@@ -178,7 +170,7 @@ public class IndicatorPlaces : GLib.Object {
             print ("Monitoring: %s\n", file.get_path ());
             monitor.changed.connect ((src, dest, event) => {
                 if (event.to_string () == "G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT") {
-                    print("Bookmarks changed, updating menu...\n");
+                    print ("Bookmarks changed, updating menu...\n");
                     make_menu ();
                 }
             });
@@ -189,7 +181,6 @@ public class IndicatorPlaces : GLib.Object {
     }
 
 	public static int main(string[] args) {
-
 		Gtk.init(ref args);
 		indicator = new Indicator("places", "system-file-manager",
 				                      IndicatorCategory.APPLICATION_STATUS);
