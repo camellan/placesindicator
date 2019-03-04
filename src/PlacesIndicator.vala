@@ -32,9 +32,6 @@ public class IndicatorPlaces : GLib.Object {
         config_dir = GLib.Path.build_filename (user_home, ".config");
         filename = GLib.Path.build_filename (config_dir, "gtk-3.0", "bookmarks", null);
         file = GLib.File.new_for_path (filename);
-        menu = new Gtk.Menu();
-        make_std_places ();
-        indicator.set_menu (menu);
 
         if (!file.query_exists ()) {
             stderr.printf ("File '%s' doesn't exist.\n", file.get_path ());
@@ -43,6 +40,7 @@ public class IndicatorPlaces : GLib.Object {
         try {
             var dis = new DataInputStream (file.read ());
             string line;
+
             while ((line = dis.read_line (null)) != null) {
                 path = line.split(" ")[0];
                 label = line.split(" ")[1];
@@ -51,23 +49,22 @@ public class IndicatorPlaces : GLib.Object {
                 item.set_always_show_image(true);
                 icon = new Gtk.Image.from_icon_name (icon_name, Gtk.IconSize.MENU);
                 item.set_image(icon);
+                menu.append(item);
+
                 item.activate.connect(() => {
                     try{
                         GLib.AppInfo.launch_default_for_uri (path, null);
+                        print (path + "\n" + label + "\n");
                     }
                     catch (GLib.Error error) {
                         warning ("Error opening directory: %s", error.message);
                     }
                 });
-                menu.append(item);
             }
         }
         catch (GLib.Error error) {
             warning ("%s", error.message);
         }
-        sep = new Gtk.SeparatorMenuItem();
-        menu.append(sep);
-        menu.append (quit);
     }
 
     public static void make_std_places () {
@@ -169,8 +166,14 @@ public class IndicatorPlaces : GLib.Object {
 				                      IndicatorCategory.APPLICATION_STATUS);
 		if (!(indicator is Indicator)) return -1;
 		indicator.set_status(IndicatorStatus.ACTIVE);
+		menu = new Gtk.Menu();
+		make_std_places ();
         make_user_places ();
+        sep = new Gtk.SeparatorMenuItem();
+        menu.append(sep);
+        menu.append (quit);
         menu.show_all ();
+        indicator.set_menu (menu);
 
         try {
             monitor = file.monitor (FileMonitorFlags.NONE, null);
@@ -178,8 +181,14 @@ public class IndicatorPlaces : GLib.Object {
             monitor.changed.connect ((src, dest, event) => {
                 if (event.to_string () == "G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT") {
                     print("Bookmarks changed, updating menu...\n");
+                    menu = new Gtk.Menu();
+                    make_std_places ();
                     make_user_places ();
+                    sep = new Gtk.SeparatorMenuItem();
+        			menu.append(sep);
+        			menu.append (quit);
                     menu.show_all ();
+                    indicator.set_menu (menu);
                 }
             });
             }
