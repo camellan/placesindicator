@@ -9,7 +9,6 @@ public class IndicatorPlaces : GLib.Object {
     private static string user_home;
     private static string config_dir;
     private static string filename;
-    private static string icon_name;
     private static GLib.File file;
     private static Gtk.Menu menu;
     private static Gtk.Image icon;
@@ -110,12 +109,16 @@ public class IndicatorPlaces : GLib.Object {
             while ((line = dis.read_line (null)) != null) {
             	string path;
     			string label;
+                string book_path;
             	path = line.split (" ")[0];
-				label = line.split (" ")[1];
+                var file = File.new_for_uri (path);
+                label = file.get_basename ();
+                if (label == "/") {label = line.split (" ")[1];}
+                book_path = file.get_parse_name ();
+                Icon _icon = get_user_icon (book_path);
 				item = new Gtk.ImageMenuItem.with_label (label);
-				get_user_icon (path);
 				item.set_always_show_image (true);
-				icon = new Gtk.Image.from_icon_name (icon_name, Gtk.IconSize.MENU);
+				icon = new Gtk.Image.from_icon_name (_icon.to_string (), Gtk.IconSize.MENU);
 				item.set_image (icon);
 				menu.append(item);
                 item.activate.connect (() => {
@@ -135,12 +138,31 @@ public class IndicatorPlaces : GLib.Object {
        	menu.append (sep);
     }
 
-    public static void get_user_icon ( string path) {
+    public static GLib.Icon? get_user_icon (string path) {
         if (path[0:3] == "smb" || path[0:3] == "ssh" || path[0:3] == "ftp" || path[0:3] == "net" || path[0:3] == "dav") {
-            icon_name = "folder-remote";
-        }
-        else {
-            icon_name = "folder";
+            return new GLib.ThemedIcon ("folder-remote");
+        } else if (path == GLib.Environment.get_home_dir ()) {
+            return new GLib.ThemedIcon ("user-home");
+        } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.DESKTOP)) {
+            return new GLib.ThemedIcon ("user-desktop");
+        } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.DOCUMENTS)) {
+            return new GLib.ThemedIcon ("folder-documents");
+        } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.DOWNLOAD)) {
+            return new GLib.ThemedIcon ("folder-download");
+        } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.MUSIC)) {
+            return new GLib.ThemedIcon ("folder-music");
+        } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.PICTURES)) {
+            return new GLib.ThemedIcon ("folder-pictures");
+        } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.PUBLIC_SHARE)) {
+            return new GLib.ThemedIcon ("folder-publicshare");
+        } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.TEMPLATES)) {
+            return new GLib.ThemedIcon ("folder-templates");
+        } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.VIDEOS)) {
+            return new GLib.ThemedIcon ("folder-videos");
+        } else if ((FileUtils.test (path, FileTest.IS_DIR)) == false) {
+            return new GLib.ThemedIcon ("text-markdown");
+        } else {
+            return new GLib.ThemedIcon ("folder");
         }
     }
 
