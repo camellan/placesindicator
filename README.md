@@ -3,7 +3,8 @@
 **A GTK3 based indicator for quick access to folders**
 
 A simple indicator, which gives fast access to the default folder and custom bookmarks a the File Manager.
-Warning! For the correct operation of the application, you must install wingpanel-indicator-ayatana.
+
+# Warning! For the correct operation of the application, you must install wingpanel-indicator-ayatana.
 
 ![Screenshot](https://github.com/camellan/placeindicator/blob/master/data/images/placesindicator.png)
 
