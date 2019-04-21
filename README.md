@@ -1,8 +1,10 @@
 [![Build Status](https://travis-ci.com/camellan/placesindicator.svg?branch=master)](https://travis-ci.com/camellan/placesindicator)
 # Places Indicator
 **Places Indicator exists in two versions:**
-**1. As a standalone application**
-**2. As a module for wingpanel**
+
+**1. As a standalone application.**
+
+**2. As a module for wingpanel (only Elementary OS)**
 
 **A GTK3 based indicator for quick access to folders**
 
