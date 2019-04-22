@@ -112,8 +112,7 @@ public class IndicatorPlaces : GLib.Object {
                 string book_path;
             	path = line.split (" ")[0];
                 var file = File.new_for_uri (path);
-                label = file.get_basename ();
-                if (label == "/") {label = line.split (" ")[1];}
+                label = line.slice (line.index_of (" ") + 1, line.length);
                 book_path = file.get_parse_name ();
                 Icon _icon = get_user_icon (book_path);
 				item = new Gtk.ImageMenuItem.with_label (label);
