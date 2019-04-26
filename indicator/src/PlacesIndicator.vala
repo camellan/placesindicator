@@ -18,7 +18,9 @@
  */
 
 public class IndicatorPlaces : Wingpanel.Indicator {
-    private Gtk.Image display_widget;
+    private Gtk.Image main_image;
+    // private Gtk.Image main_sd_image;
+   	private Gtk.Grid display_widget;
     private Gtk.Grid main_widget;
     private Wingpanel.Widgets.Button main_button;
     private string label_name;
@@ -40,7 +42,14 @@ public class IndicatorPlaces : Wingpanel.Indicator {
     }
 
     construct {
-        display_widget = new Gtk.Image.from_icon_name ("system-file-manager-symbolic", Gtk.IconSize.MENU);
+        display_widget = new Gtk.Grid ();
+        main_image = new Gtk.Image.from_icon_name ("system-file-manager-symbolic", Gtk.IconSize.MENU);
+        // main_sd_image = new Gtk.Image.from_icon_name ("media-removable-symbolic", Gtk.IconSize.MENU);
+        main_image.margin_top = 4;
+        main_image.margin_end = 5;
+        // main_sd_image.margin_top = 4;
+        display_widget.add(main_image);
+        // display_widget.add(main_sd_image);
         main_widget = new Gtk.Grid ();
     	make_std_places ();
 		make_user_places ();
