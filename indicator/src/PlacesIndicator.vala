@@ -20,9 +20,10 @@
 public class IndicatorPlaces : Wingpanel.Indicator {
     private Gtk.Image main_image;
     // private Gtk.Image main_sd_image;
-   	private Gtk.Grid display_widget;
+    private Gtk.Grid display_widget;
     private Gtk.Grid main_widget;
-    private Wingpanel.Widgets.Button main_button;
+    //  private Wingpanel.Widgets.Button main_button;
+    private Gtk.Button main_button;
     private string label_name;
     private string icon_name;
     private string uri_name;
@@ -35,9 +36,9 @@ public class IndicatorPlaces : Wingpanel.Indicator {
 
     public IndicatorPlaces () {
         Object (
-            code_name : "wingpanel-indicator-places",
-            display_name : _("Places Indicator"),
-            description: _("Quick access to the default folder and custom bookmarks File Manager")
+            code_name : "wingpanel-indicator-places"
+            //  display_name : _("Places Indicator"),
+            //  description: _("Quick access to the default folder and custom bookmarks File Manager")
         );
     }
 
@@ -51,9 +52,10 @@ public class IndicatorPlaces : Wingpanel.Indicator {
         display_widget.add(main_image);
         // display_widget.add(main_sd_image);
         main_widget = new Gtk.Grid ();
-    	make_std_places ();
-		make_user_places ();
-		start_monitor ();
+        //  main_widget.row_spacing = 2;
+        make_std_places ();
+        make_user_places ();
+        start_monitor ();
         this.visible = true;
     }
 
@@ -72,16 +74,32 @@ public class IndicatorPlaces : Wingpanel.Indicator {
     }
 
     public void update_menu () {
-    	int a = position;
-    	while (a != 5) {
-    		main_widget.remove_row (a);
-    		a--;
-    	}
-    	make_user_places ();
+        int a = position;
+        while (a != 5) {
+            main_widget.remove_row (a);
+            a--;
+        }
+        make_user_places ();
     }
 
     public void make_button (string label_name, string icon_name, string uri_name) {
-        main_button = new Wingpanel.Widgets.Button(label_name, icon_name);
+        main_button = new Gtk.Button();
+        main_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+        var bbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+        bbox.set_hexpand(true);
+        bbox.spacing = 10;
+        var blabel =  new Gtk.Label(label_name);
+        blabel.halign = Gtk.Align.START;
+        try {
+            var icon = GLib.Icon.new_for_string (icon_name);
+            var bimage = new Gtk.Image.from_gicon(icon, Gtk.IconSize.MENU);
+            bbox.pack_start(bimage, false, false, 0);
+        }
+        catch (GLib.Error error) {
+            warning ("Error opening icon: %s", error.message);
+        }
+        bbox.pack_start(blabel, false, false, 0);
+        main_button.add(bbox);
         main_widget.attach (main_button, 0, position);
         position++;
 
@@ -97,33 +115,33 @@ public class IndicatorPlaces : Wingpanel.Indicator {
     }
 
     public void make_std_places () {
-		label_name = _("Home Folder");
-		icon_name = "go-home-symbolic";
-		uri_name = "file:" + user_home;
-		make_button (label_name, icon_name, uri_name);
+        label_name = _("Home Folder");
+        icon_name = "go-home-symbolic";
+        uri_name = "file:" + user_home;
+        make_button (label_name, icon_name, uri_name);
 
-		label_name = _("File System");
-		icon_name = "drive-harddisk-symbolic";
-		uri_name = "file:///";
-		make_button (label_name, icon_name, uri_name);
+        label_name = _("File System");
+        icon_name = "drive-harddisk-symbolic";
+        uri_name = "file:///";
+        make_button (label_name, icon_name, uri_name);
 
-		label_name = _("Recent");
-		icon_name = "document-open-recent-symbolic";
-		uri_name = "recent:///";
-		make_button (label_name, icon_name, uri_name);
+        label_name = _("Recent");
+        icon_name = "document-open-recent-symbolic";
+        uri_name = "recent:///";
+        make_button (label_name, icon_name, uri_name);
 
-		label_name = _("Network");
-		icon_name = "network-workgroup-symbolic";
-		uri_name = "network:///";
-		make_button (label_name, icon_name, uri_name);
+        label_name = _("Network");
+        icon_name = "network-workgroup-symbolic";
+        uri_name = "network:///";
+        make_button (label_name, icon_name, uri_name);
 
-		label_name = _("Trash");
-		icon_name = "user-trash-symbolic";
-		uri_name = "trash:///";
-		make_button (label_name, icon_name, uri_name);
+        label_name = _("Trash");
+        icon_name = "user-trash-symbolic";
+        uri_name = "trash:///";
+        make_button (label_name, icon_name, uri_name);
 
-		main_widget.attach (new Wingpanel.Widgets.Separator (), 0, position);
-		position++;
+        main_widget.attach (new Gtk.Separator (Gtk.Orientation.HORIZONTAL), 0, position);
+        position++;
     }
 
     public void make_user_places () {
@@ -140,16 +158,16 @@ public class IndicatorPlaces : Wingpanel.Indicator {
             string line;
 
             while ((line = dis.read_line (null)) != null) {
-            	string path;
-    			string label;
+                string path;
+                string label;
                 string book_path;
-            	path = line.split (" ")[0];
+                path = line.split (" ")[0];
                 label = line.slice (line.index_of (" ") + 1, line.length);
 
                 var file = File.new_for_uri (path);
                 book_path = file.get_parse_name ();
                 Icon _icon = get_user_icon (book_path);
-				make_button (label, _icon.to_string (), path);
+                make_button (label, _icon.to_string (), path);
             }
         }
         catch (GLib.Error error) {

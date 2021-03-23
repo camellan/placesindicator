@@ -21,7 +21,7 @@ shared_module(
         dependency('gmodule-2.0'),
         dependency('gtk+-3.0', version: '>=3.10'),
         dependency('gee-0.8'),
-        dependency('wingpanel-2.0'),
+        dependency('wingpanel'),
 
     ],
     install: true,
