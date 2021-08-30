@@ -46,19 +46,3 @@ wingpanel
 **To uninstall:**
 
 `sudo ninja uninstall`
-
-**To build wingpanel module:**
-
-`cd indicator`
-
-`meson build --prefix=/usr`
-
-`cd build`
-
-`ninja`
-
-`sudo ninja install`
-
-**To uninstall:**
-
-`sudo ninja uninstall`
