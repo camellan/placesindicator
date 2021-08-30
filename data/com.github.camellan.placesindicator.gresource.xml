@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gresources>
-    <gresource prefix="/com/github/camellan/placesindicator">
-        <file alias="com.github.camellan.placesindicator.svg">icons/128/com.github.camellan.placesindicator.svg</file>
-    </gresource>
-</gresources>

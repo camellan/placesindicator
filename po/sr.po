@@ -1,0 +1,43 @@
+# Serbian translations for placesindicator package.
+# Copyright (C) 2021 THE placesindicator'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the placesindicator package.
+# Automatically generated, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: placesindicator\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-08-30 18:19+0400\n"
+"PO-Revision-Date: 2021-08-30 15:45+0400\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: sr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: src/PlacesIndicator.vala:131
+msgid "Open in Terminal"
+msgstr ""
+
+#: src/PlacesIndicator.vala:163
+msgid "Home Folder"
+msgstr ""
+
+#: src/PlacesIndicator.vala:168
+msgid "File System"
+msgstr ""
+
+#: src/PlacesIndicator.vala:173
+msgid "Recent"
+msgstr ""
+
+#: src/PlacesIndicator.vala:178
+msgid "Network"
+msgstr ""
+
+#: src/PlacesIndicator.vala:183
+msgid "Trash"
+msgstr ""

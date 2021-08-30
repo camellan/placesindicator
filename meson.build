@@ -1,67 +1,48 @@
-# project name and programming language
-project('com.github.camellan.placesindicator', 'vala', 'c')
+project(
+    'placesindicator',
+    'vala', 'c',
+    version: '1.0.0'
+)
 
-gnome = import('gnome')
+gettext_name = meson.project_name() + '-indicator'
 i18n = import('i18n')
 
-add_project_arguments(
-    '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
-    language: 'c'
+prefix = get_option('prefix')
+libdir = join_paths(prefix, get_option('libdir'))
+
+add_global_arguments('-DGETTEXT_PACKAGE="@0@"'.format(gettext_name), language:'c')
+
+add_project_arguments('-DG_LOG_DOMAIN="io.elementary.wingpanel.placesindicator"', language:'c')
+
+wingpanel_dep = dependency('wingpanel')
+wingpanel_indicatorsdir = wingpanel_dep.get_pkgconfig_variable('indicatorsdir', define_variable: ['libdir', libdir])
+
+config_data = configuration_data()
+config_data.set_quoted('LOCALEDIR', join_paths(get_option('prefix'), get_option('localedir')))
+config_data.set_quoted('GETTEXT_PACKAGE', meson.project_name() + '-indicator')
+config_file = configure_file(
+    input: 'src/Config.vala.in',
+    output: '@BASENAME@',
+    configuration: config_data
 )
 
-asresources = gnome.compile_resources(
-  'as-resources', 'data/' + meson.project_name() + '.gresource.xml',
-  source_dir: 'data',
-  c_name: 'as'
-)
-
-# Create a new executable, list the files we want to compile, list the dependencies we need, and install
-executable(
+shared_module(
     meson.project_name(),
+    config_file,
     'src/PlacesIndicator.vala',
-    asresources,
-    vala_args: [
-        '--pkg=posix'
-    ],
     dependencies: [
-        dependency('glib-2.0'),
+        dependency('glib-2.0', version: '>=2.32'),
+        dependency('gio-2.0'),
+        dependency('gio-unix-2.0'),
+        dependency('gmodule-2.0'),
         dependency('gtk+-3.0'),
-        dependency('appindicator3-0.1')
+        dependency('gee-0.8'),
+        meson.get_compiler('vala').find_library('posix'),
+        wingpanel_dep
+
     ],
-    install: true
-)
-
-#Install our .desktop file so the Applications Menu will see it
-i18n.merge_file(
-    input: join_paths('data', meson.project_name() + '.desktop.in'),
-    output: meson.project_name() + '.desktop',
-    type: 'desktop',
     install: true,
-    po_dir: join_paths(meson.source_root(), 'po', 'extra'),
-    install_dir: join_paths(get_option('datadir'), 'applications')
+    install_dir: wingpanel_indicatorsdir
 )
-
-#Install our .appdata.xml file so AppCenter will see it
-i18n.merge_file(
-    input: join_paths('data', meson.project_name() + '.appdata.xml.in'),
-    output: meson.project_name() + '.appdata.xml',
-    install: true,
-    po_dir: join_paths(meson.source_root(), 'po', 'extra'),
-    install_dir: join_paths(get_option('datadir'), 'metainfo')
-)
-
-#Install icons
-icon_sizes = ['128', '64', '48', '32', '24', '16']
-
-foreach i : icon_sizes
-    install_data(
-        join_paths('data/icons', i, meson.project_name() + '.svg'),
-        install_dir: join_paths(get_option('datadir'), 'icons', 'hicolor', i + 'x' + i, 'apps')
-    )
-    install_data(
-        join_paths('data/icons', i, meson.project_name() + '.svg'),
-        install_dir: join_paths(get_option('datadir'), 'icons', 'hicolor', i + 'x' + i + '@2', 'apps')
-    )
-endforeach
 
 subdir('po')
