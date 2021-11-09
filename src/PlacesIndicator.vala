@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright (c) 2011-2018 elementary, Inc. (https://elementary.io)
  *
  * This program is free software; you can redistribute it and/or
@@ -16,17 +16,18 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301 USA.
  */
-
- public class IndicatorPlaces : Wingpanel.Indicator {
+public class IndicatorPlaces : Wingpanel.Indicator {
     private Gtk.Image main_image;
-    // private Gtk.Image main_sd_image;
+    private Gtk.Image main_sd_image;
     private Gtk.Grid display_widget;
     private Gtk.Grid main_widget;
-    //  private Wingpanel.Widgets.Button main_button;
     private Gtk.Button main_button;
     private string label_name;
+    private string r_label_name;
     private string icon_name;
+    private string r_icon_name;
     private string uri_name;
+    private string r_uri_name;
     private string user_home = GLib.Environment.get_home_dir ();
     private string config_dir;
     private string filename;
@@ -34,6 +35,8 @@
     private int position = 0;
     private GLib.File file;
     private FileMonitor monitor;
+    private VolumeMonitor volume_monitor;
+    private Gtk.Separator r_separotor;
 
 
     public IndicatorPlaces () {
@@ -47,17 +50,17 @@
     construct {
         display_widget = new Gtk.Grid ();
         main_image = new Gtk.Image.from_icon_name ("system-file-manager-symbolic", Gtk.IconSize.MENU);
-        // main_sd_image = new Gtk.Image.from_icon_name ("media-removable-symbolic", Gtk.IconSize.MENU);
+        main_sd_image = new Gtk.Image.from_icon_name ("media-removable-symbolic", Gtk.IconSize.MENU);
         main_image.margin_top = 4;
         main_image.margin_end = 5;
-        // main_sd_image.margin_top = 4;
+        main_sd_image.margin_top = 5;
         display_widget.add(main_image);
-        // display_widget.add(main_sd_image);
         main_widget = new Gtk.Grid ();
-        //  main_widget.row_spacing = 2;
+        // main_widget.row_spacing = 2;
         make_std_places ();
         make_user_places ();
         start_monitor ();
+        detect_removable_devices ();
         this.visible = true;
     }
 
@@ -73,6 +76,98 @@
     }
 
     public override void closed () {
+    }
+
+    public void detect_removable_devices () {
+        main_sd_image.visible = false;
+
+        volume_monitor = VolumeMonitor.get ();
+
+        List<Drive> drives = volume_monitor.get_connected_drives ();
+        foreach (Drive drive in drives) {
+            bool type_drive = drive.is_removable();
+            string[] kinds = drive.enumerate_identifiers ();
+            foreach (unowned string kind in kinds) {
+                if (type_drive && drive.get_identifier (kind) != "/dev/sr0"){
+                    display_widget.add(main_sd_image);
+                    main_sd_image.visible = true;
+                }
+                else {
+                    main_sd_image.visible = false;
+                    display_widget.remove(main_sd_image);
+                }
+            }
+        }
+
+        volume_monitor.volume_added.connect ((volume) => {
+            r_label_name = volume.get_name ();
+            // r_icon_name = volume.get_icon ().to_string ();
+            // var mount = volume.get_mount ();
+            // r_uri_name = mount.get_default_location ().get_path ();
+            // print (r_uri_name );
+            // make_button (r_label_name, r_icon_name, r_uri_name);
+        });
+
+        volume_monitor.drive_connected.connect ((drive) => {
+            display_widget.add(main_sd_image);
+            main_sd_image.visible = true;
+        });
+
+        volume_monitor.drive_disconnected.connect ((drive) => {
+            List<Drive> drivess = volume_monitor.get_connected_drives ();
+            foreach (Drive driven in drivess) {
+                bool type_drive = driven.is_removable();
+                string[] kinds = driven.enumerate_identifiers ();
+                foreach (unowned string kind in kinds) {
+                    if (type_drive && driven.get_identifier (kind) != "/dev/sr0") {
+                        debug ("Connected removable devices: " + driven.get_identifier (kind) + "\n");
+                        main_sd_image.visible = true;
+                        display_widget.add(main_sd_image);
+                        return;
+                    }
+                    else {
+                        main_sd_image.visible = false;
+                        display_widget.remove(main_sd_image);
+                        main_sd_image = new Gtk.Image.from_icon_name ("media-removable-symbolic", Gtk.IconSize.MENU);
+                        main_sd_image.margin_top = 5;
+                    }
+                }
+            }
+        });
+
+        volume_monitor.mount_added.connect ((mount) => {
+            main_sd_image.visible = false;
+            display_widget.remove(main_sd_image);
+            main_sd_image = new Gtk.Image.from_icon_name ("media-removable-symbolic-active", Gtk.IconSize.MENU);
+            main_sd_image.margin_top = 5;
+            display_widget.add(main_sd_image);
+            main_sd_image.visible = true;
+            r_separotor = new Gtk.Separator (Gtk.Orientation.HORIZONTAL);
+            main_widget.attach (r_separotor, 0, position);
+            position++;
+            r_icon_name = mount.get_icon ().to_string ();
+            r_uri_name = "file:" + mount.get_default_location ().get_path ();
+            make_button (r_label_name, r_icon_name, r_uri_name);
+        });
+
+        volume_monitor.mount_pre_unmount.connect ((mount) => {
+            main_sd_image.visible = false;
+            display_widget.remove(main_sd_image);
+            main_sd_image = new Gtk.Image.from_icon_name ("media-removable-symbolic-warning", Gtk.IconSize.MENU);
+            main_sd_image.margin_top = 5;
+            display_widget.add(main_sd_image);
+            main_sd_image.visible = true;
+        });
+
+        volume_monitor.mount_removed.connect ((mount) => {
+            main_sd_image.visible = false;
+            display_widget.remove(main_sd_image);
+            main_sd_image = new Gtk.Image.from_icon_name ("media-removable-symbolic-error", Gtk.IconSize.MENU);
+            main_sd_image.margin_top = 5;
+            display_widget.add(main_sd_image);
+            main_sd_image.visible = true;
+        });
+
     }
 
     public void update_menu () {
@@ -118,12 +213,12 @@
             }
 
             if (event.type == Gdk.EventType.BUTTON_PRESS && event.button == 3) {
-                 try {
-                  app_arg = "\"" + Filename.from_uri(uri_name, null) + "\"";
+                try {
+                    app_arg = "\"" + Filename.from_uri(uri_name, null) + "\"";
                 }
                 catch (GLib.Error error) {
-                   warning ("Error decode directory name: %s", error.message);
-                   return false;
+                    warning ("Error decode directory name: %s", error.message);
+                    return false;
                 }
                 Gtk.Popover menu= new Gtk.Popover (bbox);
                 var vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
@@ -134,10 +229,8 @@
                 menu.add(vbox);
                 menu.set_position(Gtk.PositionType.LEFT);
 
-                //Gtk.MenuItem menu_item = new Gtk.MenuItem.with_label (_("Open in Terminal"));
                 pop_button.button_press_event.connect ((b, ev) => {
-                //menu_item.button_press_event.connect ((b, ev) => {
-                debug("Open in Terminal " + app_arg);
+                    debug("Open in Terminal " + app_arg);
                     try{
                         AppInfo ai = GLib.AppInfo.create_from_commandline (
                             "io.elementary.terminal -w " + app_arg,
@@ -150,10 +243,7 @@
                     }
                     return true;
                     });
-                // menu.attach_to_widget (bbox, null);
-                //menu.add (menu_item);
                 menu.show_all ();
-                // menu.popup_at_widget (bbox, Gdk.Gravity.NORTH, Gdk.Gravity.NORTH_WEST, event);
             }
             return true;
             });
@@ -207,9 +297,9 @@
                 string label;
                 string book_path;
                 path = line.split (" ")[0];
-                label = line.slice (line.index_of (" ") + 1, line.length);
-
+                // label = line.slice (line.index_of (" ") + 1, line.length);
                 var file = File.new_for_uri (path);
+                label = file.get_basename ();
                 book_path = file.get_parse_name ();
                 Icon _icon = get_user_icon (book_path);
                 make_button (label, _icon.to_string (), path);
@@ -225,36 +315,36 @@
             return new GLib.ThemedIcon ("folder-remote-symbolic");
             } else if (path[0:3] == "smb") {
                 return new GLib.ThemedIcon ("network-server-symbolic");
-                } else if (path[0:8] == "network:") {
-                    return new GLib.ThemedIcon ("network-workgroup-symbolic");
-                    } else if (path == GLib.Environment.get_home_dir ()) {
-                        return new GLib.ThemedIcon ("user-home-symbolic");
-                        } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.DESKTOP)) {
-                            return new GLib.ThemedIcon ("user-desktop-symbolic");
-                            } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.DOCUMENTS)) {
-                                return new GLib.ThemedIcon ("folder-documents-symbolic");
-                                } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.DOWNLOAD)) {
-                                    return new GLib.ThemedIcon ("folder-download-symbolic");
-                                    } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.MUSIC)) {
-                                        return new GLib.ThemedIcon ("folder-music-symbolic");
-                                        } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.PICTURES)) {
-                                            return new GLib.ThemedIcon ("folder-pictures-symbolic");
-                                            } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.PUBLIC_SHARE)) {
-                                                return new GLib.ThemedIcon ("folder-publicshare-symbolic");
-                                                } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.TEMPLATES)) {
-                                                    return new GLib.ThemedIcon ("folder-templates-symbolic");
-                                                    } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.VIDEOS)) {
-                                                        return new GLib.ThemedIcon ("folder-videos-symbolic");
-                                                        } else if ((FileUtils.test (path, FileTest.IS_DIR)) == false) {
-                                                            return new GLib.ThemedIcon ("text-markdown-symbolic");
-                                                            } else {
-                                                                return new GLib.ThemedIcon ("folder-symbolic");
-                                                            }
-                                                        }
+            } else if (path[0:8] == "network:") {
+                return new GLib.ThemedIcon ("network-workgroup-symbolic");
+            } else if (path == GLib.Environment.get_home_dir ()) {
+                return new GLib.ThemedIcon ("user-home-symbolic");
+            } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.DESKTOP)) {
+                return new GLib.ThemedIcon ("user-desktop-symbolic");
+            } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.DOCUMENTS)) {
+                return new GLib.ThemedIcon ("folder-documents-symbolic");
+            } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.DOWNLOAD)) {
+                return new GLib.ThemedIcon ("folder-download-symbolic");
+            } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.MUSIC)) {
+                return new GLib.ThemedIcon ("folder-music-symbolic");
+            } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.PICTURES)) {
+                return new GLib.ThemedIcon ("folder-pictures-symbolic");
+            } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.PUBLIC_SHARE)) {
+                return new GLib.ThemedIcon ("folder-publicshare-symbolic");
+            } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.TEMPLATES)) {
+                return new GLib.ThemedIcon ("folder-templates-symbolic");
+            } else if (path == GLib.Environment.get_user_special_dir (GLib.UserDirectory.VIDEOS)) {
+                return new GLib.ThemedIcon ("folder-videos-symbolic");
+            } else if ((FileUtils.test (path, FileTest.IS_DIR)) == false) {
+                return new GLib.ThemedIcon ("text-markdown-symbolic");
+            } else {
+                return new GLib.ThemedIcon ("folder-symbolic");
+                }
+            }
 
-                                                        public void start_monitor () {
-                                                            try {
-                                                                monitor = file.monitor (FileMonitorFlags.NONE, null);
+    public void start_monitor () {
+        try {
+            monitor = file.monitor (FileMonitorFlags.NONE, null);
             //debug ("Monitoring: %s\n", file.get_path ());
             monitor.changed.connect ((src, dest, event) => {
                 if (event.to_string () == "G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT") {
@@ -269,7 +359,8 @@
     }
 }
 
-public Wingpanel.Indicator? get_indicator (Module module, Wingpanel.IndicatorManager.ServerType server_type) {
+public Wingpanel.Indicator? get_indicator (Module module,
+                        Wingpanel.IndicatorManager.ServerType server_type) {
     debug ("Activating Places Indicator");
 
     if (server_type != Wingpanel.IndicatorManager.ServerType.SESSION) {

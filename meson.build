@@ -1,5 +1,5 @@
 project(
-    'placesindicator',
+    'places',
     'vala', 'c',
     version: '1.0.0'
 )
@@ -12,7 +12,7 @@ libdir = join_paths(prefix, get_option('libdir'))
 
 add_global_arguments('-DGETTEXT_PACKAGE="@0@"'.format(gettext_name), language:'c')
 
-add_project_arguments('-DG_LOG_DOMAIN="io.elementary.wingpanel.placesindicator"', language:'c')
+add_project_arguments('-DG_LOG_DOMAIN="placesindicator"', language:'c')
 
 wingpanel_dep = dependency('wingpanel')
 wingpanel_indicatorsdir = wingpanel_dep.get_pkgconfig_variable('indicatorsdir', define_variable: ['libdir', libdir])
