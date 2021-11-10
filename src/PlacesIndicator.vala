@@ -91,8 +91,7 @@ public class IndicatorPlaces : Wingpanel.Indicator {
                 if (type_drive && drive.get_identifier (kind) != "/dev/sr0"){
                     display_widget.add(main_sd_image);
                     main_sd_image.visible = true;
-                }
-                else {
+                } else {
                     main_sd_image.visible = false;
                     display_widget.remove(main_sd_image);
                 }
@@ -124,8 +123,7 @@ public class IndicatorPlaces : Wingpanel.Indicator {
                         main_sd_image.visible = true;
                         display_widget.add(main_sd_image);
                         return;
-                    }
-                    else {
+                    } else {
                         main_sd_image.visible = false;
                         display_widget.remove(main_sd_image);
                         main_sd_image = new Gtk.Image.from_icon_name ("media-removable-symbolic", Gtk.IconSize.MENU);
