@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.com/camellan/placesindicator.svg?branch=master)](https://travis-ci.com/camellan/placesindicator)
 # Places Indicator
 
-**A GTK3 based indicator for quick access to folders**
+**Wingpanel indicator for quick access to folders**
 
 A simple indicator, which gives fast access to the default folder and custom bookmarks a the File Manager.
 
