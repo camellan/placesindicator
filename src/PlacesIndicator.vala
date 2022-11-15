@@ -18,16 +18,12 @@
  */
 public class IndicatorPlaces : Wingpanel.Indicator {
     private Gtk.Image main_image;
-    private Gtk.Image main_sd_image;
     private Gtk.Grid display_widget;
     private Gtk.Grid main_widget;
     private Gtk.Button main_button;
     private string label_name;
-    private string r_label_name;
     private string icon_name;
-    private string r_icon_name;
     private string uri_name;
-    private string r_uri_name;
     private string user_home = GLib.Environment.get_home_dir ();
     private string config_dir;
     private string filename;
@@ -35,9 +31,6 @@ public class IndicatorPlaces : Wingpanel.Indicator {
     private int position = 0;
     private GLib.File file;
     private FileMonitor monitor;
-    private VolumeMonitor volume_monitor;
-    private Gtk.Separator r_separotor;
-
 
     public IndicatorPlaces () {
         Object (
@@ -50,17 +43,14 @@ public class IndicatorPlaces : Wingpanel.Indicator {
     construct {
         display_widget = new Gtk.Grid ();
         main_image = new Gtk.Image.from_icon_name ("system-file-manager-symbolic", Gtk.IconSize.MENU);
-        main_sd_image = new Gtk.Image.from_icon_name ("media-removable-symbolic", Gtk.IconSize.MENU);
         main_image.margin_top = 4;
         main_image.margin_end = 5;
-        main_sd_image.margin_top = 5;
         display_widget.add(main_image);
         main_widget = new Gtk.Grid ();
         // main_widget.row_spacing = 2;
         make_std_places ();
         make_user_places ();
         start_monitor ();
-        detect_removable_devices ();
         this.visible = true;
     }
 
@@ -76,96 +66,6 @@ public class IndicatorPlaces : Wingpanel.Indicator {
     }
 
     public override void closed () {
-    }
-
-    public void detect_removable_devices () {
-        main_sd_image.visible = false;
-
-        volume_monitor = VolumeMonitor.get ();
-
-        List<Drive> drives = volume_monitor.get_connected_drives ();
-        foreach (Drive drive in drives) {
-            bool type_drive = drive.is_removable();
-            string[] kinds = drive.enumerate_identifiers ();
-            foreach (unowned string kind in kinds) {
-                if (type_drive && drive.get_identifier (kind) != "/dev/sr0"){
-                    display_widget.add(main_sd_image);
-                    main_sd_image.visible = true;
-                } else {
-                    main_sd_image.visible = false;
-                    display_widget.remove(main_sd_image);
-                }
-            }
-        }
-
-        volume_monitor.volume_added.connect ((volume) => {
-            r_label_name = volume.get_name ();
-            // r_icon_name = volume.get_icon ().to_string ();
-            // var mount = volume.get_mount ();
-            // r_uri_name = mount.get_default_location ().get_path ();
-            // print (r_uri_name );
-            // make_button (r_label_name, r_icon_name, r_uri_name);
-        });
-
-        volume_monitor.drive_connected.connect ((drive) => {
-            display_widget.add(main_sd_image);
-            main_sd_image.visible = true;
-        });
-
-        volume_monitor.drive_disconnected.connect ((drive) => {
-            List<Drive> drivess = volume_monitor.get_connected_drives ();
-            foreach (Drive driven in drivess) {
-                bool type_drive = driven.is_removable();
-                string[] kinds = driven.enumerate_identifiers ();
-                foreach (unowned string kind in kinds) {
-                    if (type_drive && driven.get_identifier (kind) != "/dev/sr0") {
-                        debug ("Connected removable devices: " + driven.get_identifier (kind) + "\n");
-                        main_sd_image.visible = true;
-                        display_widget.add(main_sd_image);
-                        return;
-                    } else {
-                        main_sd_image.visible = false;
-                        display_widget.remove(main_sd_image);
-                        main_sd_image = new Gtk.Image.from_icon_name ("media-removable-symbolic", Gtk.IconSize.MENU);
-                        main_sd_image.margin_top = 5;
-                    }
-                }
-            }
-        });
-
-        volume_monitor.mount_added.connect ((mount) => {
-            main_sd_image.visible = false;
-            display_widget.remove(main_sd_image);
-            main_sd_image = new Gtk.Image.from_icon_name ("media-removable-symbolic-active", Gtk.IconSize.MENU);
-            main_sd_image.margin_top = 5;
-            display_widget.add(main_sd_image);
-            main_sd_image.visible = true;
-            r_separotor = new Gtk.Separator (Gtk.Orientation.HORIZONTAL);
-            main_widget.attach (r_separotor, 0, position);
-            position++;
-            r_icon_name = mount.get_icon ().to_string ();
-            r_uri_name = "file:" + mount.get_default_location ().get_path ();
-            make_button (r_label_name, r_icon_name, r_uri_name);
-        });
-
-        volume_monitor.mount_pre_unmount.connect ((mount) => {
-            main_sd_image.visible = false;
-            display_widget.remove(main_sd_image);
-            main_sd_image = new Gtk.Image.from_icon_name ("media-removable-symbolic-warning", Gtk.IconSize.MENU);
-            main_sd_image.margin_top = 5;
-            display_widget.add(main_sd_image);
-            main_sd_image.visible = true;
-        });
-
-        volume_monitor.mount_removed.connect ((mount) => {
-            main_sd_image.visible = false;
-            display_widget.remove(main_sd_image);
-            main_sd_image = new Gtk.Image.from_icon_name ("media-removable-symbolic-error", Gtk.IconSize.MENU);
-            main_sd_image.margin_top = 5;
-            display_widget.add(main_sd_image);
-            main_sd_image.visible = true;
-        });
-
     }
 
     public void update_menu () {
